@@ -7,3 +7,4 @@ export const createProductSchema = zod.object({
     price: zod.number().positive(),
     category: zod.string().max(100)
 })
+export type CreateProductInput = zod.infer<typeof createProductSchema>
