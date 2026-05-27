@@ -47,9 +47,14 @@ export const updateProfile = async(req:Request , res:Response) =>{
 
     try{
 
-        const  updatedUser = await prisma.onBoarding.update({
+        const  updatedUser = await prisma.onBoarding.upsert({
             where: { userId: userId },
-            data:{
+            update: {
+                address: inputData.address,
+                phoneNumber: inputData.phoneNumber
+            },
+            create: {
+                userId: userId,
                 address: inputData.address,
                 phoneNumber: inputData.phoneNumber
             }

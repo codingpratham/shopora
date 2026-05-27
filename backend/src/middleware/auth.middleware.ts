@@ -10,13 +10,17 @@ declare global {
 }
 
 export const authenticate = (req: Request, res: Response, next: NextFunction) => {
-    const token = req.cookies.refreshToken;
+    let token = req.cookies.token;
+
+    if (!token && req.headers.authorization?.startsWith("Bearer ")) {
+        token = req.headers.authorization.split(" ")[1];
+    }
 
     if (!token) {
         return res.status(401).json({ message: "No token provided" });
     }
 
-    try{
+    try {
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET!);
 
         if (!decoded || !decoded.userId) {
@@ -26,7 +30,7 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
         const payload = decoded as { userId: string };
         req.userId = payload.userId;
         next();
-    }catch(error:any){
+    } catch (error: any) {
         res.status(401).json({ message: "Invalid token" });
     }
 }

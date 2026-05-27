@@ -41,7 +41,7 @@ model Token{
 model OnBoarding {
   id String @id @default(uuid())
   address String
-  phoneNumber Int
+  phoneNumber String
 
   userId String @unique
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

@@ -1,18 +1,30 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-export const roleMiddleware = (req : Request , res : Response, next : NextFunction) => {
+import prisma from "../utils/prisma.js";
 
-    const token = req.cookies.token;
+export const roleMiddleware = async (req: Request, res: Response, next: NextFunction) => {
+    let token = req.cookies.token;
+
+    if (!token && req.headers.authorization?.startsWith("Bearer ")) {
+        token = req.headers.authorization.split(" ")[1];
+    }
+
     if (!token) {
         return res.status(401).json({ message: "Unauthorized" });
     }
 
     try {
-        const decode = jwt.verify(token, process.env.JWT_SECRET_KEY || "secret") as { role: string };
+        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
 
-        const payload = decode.role
+        if (!decoded || !decoded.userId) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
 
-        if (payload !== "admin") {
+        const user = await prisma.user.findUnique({
+            where: { id: decoded.userId }
+        });
+
+        if (!user || user.role !== "ADMIN") {
             return res.status(403).json({ message: "Forbidden" });
         }
 
