@@ -153,7 +153,7 @@ export const createProduct = async (req: Request, res: Response) => {
         imageUrl: imageUrls,
         title: inputData.title,
         description: inputData.description,
-        price: Number(inputData.price),
+        price: String(inputData.price),
         category: inputData.category,
         userId,
       },
@@ -221,7 +221,7 @@ export const updateProduct = async (req: Request, res: Response) => {
           description: input.description,
         }),
         ...(input.price && {
-          price: Number(input.price),
+          price: input.price,
         }),
         ...(input.category && {
           category: input.category,

@@ -9,9 +9,10 @@ import orderRouter from './order.routes.js';
 const router = express.Router();
 
 router.use('/auth',authRouter)
+router.use('/user',userRouter)
+
 router.use('/products',productRouter)
 router.use('/cart',cartRouter)
-router.use('/user',userRouter)
 router.use('/orders',orderRouter)
 
 
