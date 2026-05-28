@@ -1,4 +1,4 @@
-import AuthPage from "./pages/auth/AuthPage"
+import AuthPage from "@/pages/AuthPage"
 
 const App = () => {
   return (
