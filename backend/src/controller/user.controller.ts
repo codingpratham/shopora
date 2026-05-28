@@ -60,6 +60,12 @@ export const updateProfile = async(req:Request , res:Response) =>{
             }
         })
 
+        // Mark user as onboarded
+        await prisma.user.update({
+            where: { id: userId },
+            data: { onBoard: true }
+        })
+
         if(!updatedUser){
             return res.status(404).json({message:"User not found"})
         }

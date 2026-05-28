@@ -24,11 +24,12 @@ export const roleMiddleware = async (req: Request, res: Response, next: NextFunc
             where: { id: decoded.userId }
         });
 
-        if (!user || user.role !== "ADMIN") {
+        if(!user || user.role !== "ADMIN"){
             return res.status(403).json({ message: "Forbidden" });
         }
-
-        next();
+        else{
+            next()
+        }
     } catch (error: any) {
         return res.status(500).json({ message: error?.message || "Internal server error" });
     }

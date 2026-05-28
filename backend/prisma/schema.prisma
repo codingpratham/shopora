@@ -21,6 +21,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  onBoard Boolean @default(false)
+
   onBoarding OnBoarding?
   products Product[]
   cart Cart?
@@ -63,6 +65,7 @@ model Product{
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   cartItems CartItem[]
   orderItems OrderItem[]
+  stock Int @default(0)
 }
 
 model Cart {
@@ -90,11 +93,12 @@ model Order {
   id String @id @default(uuid())
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  totalAmount Float
+  status OrderStatus @default(PENDING)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   orderItems OrderItem[]
+  payment    Payment?
 }
 
 model OrderItem {
@@ -110,12 +114,26 @@ model OrderItem {
   updatedAt DateTime @updatedAt
 }
 
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
 enum OrderStatus {
   PENDING
   COMPLETED
   CANCELLED
 }
 
+model Payment {
+  id         String   @id @default(uuid())
+  orderId    String   @unique
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  amount     Float
+  provider   String
+  status     PaymentStatus @default(PENDING)
+  createdAt  DateTime @default(now())
+}
 enum UserRole {
   USER
   ADMIN
